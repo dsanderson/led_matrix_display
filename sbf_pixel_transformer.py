@@ -80,52 +80,71 @@ t1=time.time()
 diff = t1-t0
 print "Approx. {} sec/pixel".format(diff/float(10000))
 
-class GraphicsTest(SampleBase):
+class Sbf(SampleBase):
     def __init__(self, *args, **kwargs):
-        super(GraphicsTest, self).__init__(*args, **kwargs)
-        self.panels = panels
-        self.gen_pixel_list()
-        canvas = self.matrix
-        self.draw_start()
-        self.run()
+        self.panels = kwargs['panels']
+	self.gen_pixel_list()
+	super(Sbf, self).__init__(*args, **kwargs)
+        #self.panels = kwargs['panels']
+        #self.gen_pixel_list()
+        #self.draw_start()
+        #self.run()
+	#pass
 
     def gen_pixel_list(self):
-        panels = self.panels
+        panels = [p[0] for p in self.panels]
+	#print panels
         self.pixels = []
-        for p in panels:
+        for i, p in enumerate(panels):
             xmin, xmax, ymin, ymax = get_bounds(p)
-            base_color = p[]
+            base_color = self.panels[i][1]
             pixels = list(itertools.product(range(xmin, xmax), range(ymin, ymax)))
-            pixels = [transform_pixel(pix) for pix in pixels]
+            pixels = [transform_pixel(pix[0],pix[1],panels) for pix in pixels]
             pixels = [(pix, base_color) for pix in pixels]
-            self.pixels.append(pixels)
+            self.pixels = self.pixels+pixels
 
     def randomize_color(self, col):
         shift = random.randint(-10, 10)
         r = col[0]+shift if col[0]+shift<255 else 255
         g = col[1]+shift if col[1]+shift<255 else 255
         b = col[2]+shift if col[2]+shift<255 else 255
-        return r,g,b
+        #return r,g,b
+	return 255, 0, 0
 
     def draw_start(self):
+        print "Drawing base"
+        canvas = self.matrix.CreateFrameCanvas()
+	print self.pixels[0]
         for p in self.pixels:
             r,g,b = p[1]
-            graphics.SetPixel(p[0][0], p[0][1], r, g, b)
+            canvas.SetPixel(p[0][0], p[0][1], r, g, b)
+        canvas = self.matrix.SwapOnVSync(canvas)
 
     def run(self):
+        print "Starting run"
         #font = graphics.Font()
         #font.LoadFont("../../fonts/7x13.bdf")
         changed_pixels_indecies = []
+	self.draw_start()
+	canvas = self.matrix.CreateFrameCanvas()
         while True:
-            i = random.randint(0, len(self.pixels))
-            if len(changed_pixels_indecies)>100:
-                i0 = changed_pixels_indecies.pop(0)
+	    #canvas.SetPixel(0,0,255,255,255)
+            i = random.randint(0, len(self.pixels)-1)
+            while len(changed_pixels_indecies)>5:
+                i0 = changed_pixels_indecies[0]
+		changed_pixels_indecies = changed_pixels_indecies[1:]
                 r, g, b = self.pixels[i0][1]
-                graphics.SetPixel(self.pixels[i0][0][0], self.pixels[i0][0][1], r, g, b)
-            r, g, b = randomize_color(self.pixels[i][1])
-            graphics.SetPixel(self.pixels[i][0][0], self.pixels[i][0][1], r, g, b)
-            changed_pixels_indecies.push(i)
+		print self.pixels[i0][0], r, g, b, changed_pixels_indecies
+                canvas.SetPixel(self.pixels[i0][0][0], self.pixels[i0][0][1], r, g, b)
+		canvas = self.matrix.SwapOnVSync(canvas)
+            r, g, b = self.randomize_color(self.pixels[i][1])
+            canvas.SetPixel(self.pixels[i][0][0], self.pixels[i][0][1], r, g, b)
+            changed_pixels_indecies.append(i)
+	    canvas = self.matrix.SwapOnVSync(canvas)
 
 if __name__ == '__main__':
-    panels = [(p, (240,240,240)) for p in panels]
-    g = GraphicsTest(panels=panels)
+    panels = [(p, (0,255,0)) for p in pts]
+    sbf = Sbf(panels=panels)
+    if (not sbf.process()):
+        sbf.print_help()
+    #sbf.run()
