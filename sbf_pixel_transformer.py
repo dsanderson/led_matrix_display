@@ -114,7 +114,7 @@ class Sbf(SampleBase):
     def draw_start(self):
         print "Drawing base"
         canvas = self.matrix.CreateFrameCanvas()
-	print self.pixels[0]
+	#print self.pixels[0]
         for p in self.pixels:
             r,g,b = p[1]
             canvas.SetPixel(p[0][0], p[0][1], r, g, b)
@@ -125,8 +125,11 @@ class Sbf(SampleBase):
         #font = graphics.Font()
         #font.LoadFont("../../fonts/7x13.bdf")
         changed_pixels_indecies = []
-	self.draw_start()
+	#self.draw_start()
 	canvas = self.matrix.CreateFrameCanvas()
+	for p in self.pixels:
+	    r, g, b = p[1]
+	    canvas.SetPixel(p[0][0],p[0][1],r,g,b)
         while True:
 	    #canvas.SetPixel(0,0,255,255,255)
             i = random.randint(0, len(self.pixels)-1)
@@ -134,16 +137,16 @@ class Sbf(SampleBase):
                 i0 = changed_pixels_indecies[0]
 		changed_pixels_indecies = changed_pixels_indecies[1:]
                 r, g, b = self.pixels[i0][1]
-		print self.pixels[i0][0], r, g, b, changed_pixels_indecies
+		#print self.pixels[i0][0], r, g, b, changed_pixels_indecies
                 canvas.SetPixel(self.pixels[i0][0][0], self.pixels[i0][0][1], r, g, b)
-		canvas = self.matrix.SwapOnVSync(canvas)
+		#canvas = self.matrix.SwapOnVSync(canvas)
             r, g, b = self.randomize_color(self.pixels[i][1])
             canvas.SetPixel(self.pixels[i][0][0], self.pixels[i][0][1], r, g, b)
             changed_pixels_indecies.append(i)
 	    canvas = self.matrix.SwapOnVSync(canvas)
 
 if __name__ == '__main__':
-    panels = [(p, (0,255,0)) for p in pts]
+    panels = [(p, (0,200,0)) for p in pts]
     sbf = Sbf(panels=panels)
     if (not sbf.process()):
         sbf.print_help()
