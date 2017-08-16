@@ -85,8 +85,8 @@ ranges = [get_bounds(p) for p in pts]
 if __name__ == '__main__':
     pixels = []
     for p in img:
-	x1 = p[0]+6
-	y1 = p[1]+4
+	x1 = p[0]+12
+	y1 = p[1]+7
         if transform_pixel(x1,y1,pts)==None:
             continue
         xt, yt = transform_pixel(x1,y1,pts)
