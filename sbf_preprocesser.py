@@ -49,16 +49,16 @@ def transform_pixel(x, y, panels):
             return panel[4](x, y)
 
 
-panels = [(32, 193, 0, 1),
-            (32, 161, 180, 2),
-            (32, 129, 0, 3),
-            (32, 97, 180, 4),
-            (32, 65, 0, 5),
-            (97, 81, 0, 6),
-            (97, 49, 180, 7),
-            (32, 33, 180, 8),
-            (0, 38, 90, 9),
-            (32, 0, 0, 10)]
+panels = [(32, 193, 180, 1),
+            (32, 161, 0, 2),
+            (32, 129, 180, 3),
+            (32, 97, 0, 4),
+            (32, 65, 180, 7),
+            (97, 76, 0, 5),
+            (97, 44, 180, 6),#180
+            (32, 33, 0, 9),
+            (0, 38, 90, 8),
+            (32, 0, 180, 10)]
 #print panels
 pts = []
 for p in panels:
@@ -84,14 +84,13 @@ ranges = [get_bounds(p) for p in pts]
 
 if __name__ == '__main__':
     pixels = []
-    for x in xrange(xmax):
-        for y in xrange(ymax):
-            p = img[x][y] #TODO play with this
-            if transform_pixel(x,y,pts)==None:
-                continue
-            xt, yt = transform_pixel(x,y,pts)
-            if p!=(0,0,0):
-                pixels.append(xt, yt, p[0], p[1], p[2])
+    for p in img:
+	x1 = p[0]+6
+	y1 = p[1]+4
+        if transform_pixel(x1,y1,pts)==None:
+            continue
+        xt, yt = transform_pixel(x1,y1,pts)
+        pixels.append((xt, yt, p[2], p[3], p[4]))
 
 with open("sbf_pixels.pkl", "wb") as f:
-    pickle.dump(pixles, f)
+    pickle.dump(pixels, f)
