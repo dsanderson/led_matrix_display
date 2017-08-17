@@ -20,7 +20,7 @@ class SbffLaunch(SampleBase):
 	    for j in xrange(i, i+10):
 		p = self.pixels[j]
             	canvas.SetPixel(p[0],p[1],p[2],p[3],p[4])
-            canvas = self.matrix.SwapOnVSync(canvas)
+        canvas = self.matrix.SwapOnVSync(canvas)
         while True:
             canvas = self.matrix.SwapOnVSync(canvas)
 	    #pass #TODO: Add qr behavior here
