@@ -2,30 +2,25 @@ from samplebase import SampleBase
 from rgbmatrix import graphics
 import pickle
 import random
+import keyboard
+from PIL import image
 
 class SbfLaunch(SampleBase):
     def __init__(self, *args, **kwargs):
-        with open("sbf_pixels.pkl","rb") as f:
-            self.pixels = pickle.load(f)
-            random.seed(100)
-            random.shuffle(self.pixels)
         super(SbfLaunch, self).__init__(*args, **kwargs)
 
     def run(self):
-        #TODO: Add waiting for keypress
-        
+        self.image = Image.open("sbf_images/base.PPM").convert('RGB')
         print "Starting run"
         canvas = self.matrix.CreateFrameCanvas()
-        for i in xrange(0, len(self.pixels)-10):
-	    for j in xrange(i, i+10):
-		p = self.pixels[j]
-            	canvas.SetPixel(p[0],p[1],p[2],p[3],p[4])
-            canvas = self.matrix.SwapOnVSync(canvas)
+        canvas.SetImage(self.image,0,0)
         while True:
             canvas = self.matrix.SwapOnVSync(canvas)
 	    #pass #TODO: Add qr behavior here
 
 if __name__ == '__main__':
+    print "waiting for page down"
+    keyboard.wait("page down")
     sbf = SbfLaunch()
     if (not sbf.process()):
         sbf.print_help()
