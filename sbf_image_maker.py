@@ -113,6 +113,8 @@ def make_cube_image(cube_coords, base_image, out_name, panels):
     draw = ImageDraw.Draw(im)
     #iterate over pixels in cubes, converting to the panel-space, and color those pixels white
     for p in cube_coords:
+        if transform_pixel(p[0], p[1], panels)==None: #We shouldn't need this, look into it
+            continue
         xt, yt = transform_pixel(p[0], p[1], panels)
         draw.point([(xt, yt)], (255, 255, 255))
     del draw
