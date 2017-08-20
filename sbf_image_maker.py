@@ -2,6 +2,7 @@ from PIL import Image, ImageDraw
 import time, random
 import itertools
 import pickle
+import tqdm
 
 im = Image.open("SBF_logo.png")
 
