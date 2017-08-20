@@ -12,13 +12,13 @@ h = im.height
 pixels = []
 
 for x in xrange(0, w):
-	for y in xrange(0, h):
-		#flip y.  Also introduce any shift here
-		xt = x
-		yt = y#h-(y+1)
-		r, g, b, a = im.getpixel((x,y))
-		if any([r != 0, b != 0, g != 0, a != 0]):
-			pixels.append((xt, yt, r, g, b))
+    for y in xrange(0, h):
+        #flip y.  Also introduce any shift here
+        xt = x
+        yt = y#h-(y+1)
+        r, g, b, a = im.getpixel((x,y))
+        if any([r != 0, b != 0, g != 0, a != 0]):
+            pixels.append((xt, yt, r, g, b))
 
 print len(pixels)
 
@@ -98,54 +98,54 @@ def make_image(pixels, w, h, name):
     im.save(name, "PPM")
 
 def make_cube_image(cube_coords, base_image, out_name, panels):
-	im = Image.open(base_image)
-	draw = ImageDraw.Draw(im)
-	#iterate over pixels in cubes, converting to the panel-space, and color those pixels white
-	for p in cube_coords:
-		xt, yt = transform_pixel(p[0], p[1], panels)
-		draw.point([(xt, yt)], (255, 255, 255))
-	del draw
-	im.save(out_name, "PPM")
+    im = Image.open(base_image)
+    draw = ImageDraw.Draw(im)
+    #iterate over pixels in cubes, converting to the panel-space, and color those pixels white
+    for p in cube_coords:
+        xt, yt = transform_pixel(p[0], p[1], panels)
+        draw.point([(xt, yt)], (255, 255, 255))
+    del draw
+    im.save(out_name, "PPM")
 
 def convert_cube_coords(cube_pose):
-	"""convert from a grid with lattice pointsd corresponding to cubes to one corresponsding to pixles
-	inputs:
-		cube_pose: integer 2-tuple
-	outputs:
-		cube_coords: list of integer 2-tuples of pixel locations in untransformed space"""
-	xt = 0 #offsets for top-left of cubes
-	yt = 0
-	xstart = cube_pose[0]*6+xt
-	xend = xstart+5
-	ystart = cube_pose[1]*6+yt
-	yend = ystart+5
-	cube_coords = []
-	for x in range(xstart, xend+1):
-		for y in range(ystart, yend+1):
-			cube_coords.append((x, ymax-1-y))
-	return cube_coords
+    """convert from a grid with lattice pointsd corresponding to cubes to one corresponsding to pixles
+    inputs:
+        cube_pose: integer 2-tuple
+    outputs:
+        cube_coords: list of integer 2-tuples of pixel locations in untransformed space"""
+    xt = 0 #offsets for top-left of cubes
+    yt = 0
+    xstart = cube_pose[0]*6+xt
+    xend = xstart+5
+    ystart = cube_pose[1]*6+yt
+    yend = ystart+5
+    cube_coords = []
+    for x in range(xstart, xend+1):
+        for y in range(ystart, yend+1):
+            cube_coords.append((x, ymax-1-y))
+    return cube_coords
 
 cubes = [(3,0),(4,0),(5,0),(6,0),(9,0),(10,0),
-	(1,1),(2,1),(3,1),(4,1),(5,1),(6,1),(7,1),(9,1),(10,1),(11,1),
-	(1,2),(2,2),(3,2),(4,2),(5,2),(6,2),(7,2),(10,2),(11,2),(12,2),
-	(0,3),(1,3),(2,3),(3,3),(4,3),(5,3),(6,3),(7,3),(8,3),(9,3),(10,3),(11,3),(12,3),
-	(4,4),(5,4),(6,4),(7,4),(8,4),(9,4),(10,4),(11,4),(12,4),
-	(6,5),(7,5),(8,5),(9,5),(10,5),(11,5),(12,5),
-	(8,6),(9,6),(10,6),(11,6),(12,6),
-	(9,7),(10,7),(11,7),(12,7),
-	(10,8),(11,8),(12,8),(13,8),(14,8),(15,8),(16,8),(17,8),(18,8),
-	(12,9),(13,9),(14,9),(15,9),(16,9),(17,9)]
+    (1,1),(2,1),(3,1),(4,1),(5,1),(6,1),(7,1),(9,1),(10,1),(11,1),
+    (1,2),(2,2),(3,2),(4,2),(5,2),(6,2),(7,2),(10,2),(11,2),(12,2),
+    (0,3),(1,3),(2,3),(3,3),(4,3),(5,3),(6,3),(7,3),(8,3),(9,3),(10,3),(11,3),(12,3),
+    (4,4),(5,4),(6,4),(7,4),(8,4),(9,4),(10,4),(11,4),(12,4),
+    (6,5),(7,5),(8,5),(9,5),(10,5),(11,5),(12,5),
+    (8,6),(9,6),(10,6),(11,6),(12,6),
+    (9,7),(10,7),(11,7),(12,7),
+    (10,8),(11,8),(12,8),(13,8),(14,8),(15,8),(16,8),(17,8),(18,8),
+    (12,9),(13,9),(14,9),(15,9),(16,9),(17,9)]
 
 if __name__ == '__main__':
     out_pixels = []
     for p in pixels:
-		x = p[0]
-	    y = ymax-1-p[1]
-		if transform_pixel(x,y,pts)==None:
-		    continue
-		xt, yt = transform_pixel(x,y,pts)
-		out_pixels.append((xt, yt, p[2], p[3], p[4]))
-	make_image(out_pixels, 20*32, 32, "sbff_images/sbff_logo.PPM")
-	for i, c in tqdm.tqdm(enumerate(cubes)):
-		pixs = convert_cube_coords(c)
-		make_cube_image(pixs, "sbff_images/sbff_logo.PPM", "sbff_images/{}.PPM".format(i), pts)
+        x = p[0]
+        y = ymax-1-p[1]
+        if transform_pixel(x,y,pts)==None:
+            continue
+        xt, yt = transform_pixel(x,y,pts)
+        out_pixels.append((xt, yt, p[2], p[3], p[4]))
+    make_image(out_pixels, 20*32, 32, "sbff_images/sbff_logo.PPM")
+    for i, c in tqdm.tqdm(enumerate(cubes)):
+        pixs = convert_cube_coords(c)
+        make_cube_image(pixs, "sbff_images/sbff_logo.PPM", "sbff_images/{}.PPM".format(i), pts)

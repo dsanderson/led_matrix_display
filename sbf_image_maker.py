@@ -11,13 +11,13 @@ h = im.height
 pixels = []
 
 for x in xrange(0, w):
-	for y in xrange(0, h):
-		#flip y.  Also introduce any shift here
-		xt = x
-		yt = h-(y+1)
-		r, g, b, a = im.getpixel((x,y))
-		if any([r != 0, b != 0, g != 0, a != 0]):
-			pixels.append((xt, yt, r, g, b))
+    for y in xrange(0, h):
+        #flip y.  Also introduce any shift here
+        xt = x
+        yt = h-(y+1)
+        r, g, b, a = im.getpixel((x,y))
+        if any([r != 0, b != 0, g != 0, a != 0]):
+            pixels.append((xt, yt, r, g, b))
 
 print len(pixels)
 
@@ -108,46 +108,46 @@ def make_image(pixels, w, h, name):
 
 
 def make_cube_image(cube_coords, base_image, out_name, panels):
-	im = Image.open(base_image)
-	draw = ImageDraw.Draw(im)
-	#iterate over pixels in cubes, converting to the panel-space, and color those pixels white
-	for p in cube_coords:
-		xt, yt = transform_pixel(p[0], p[1], panels)
-		draw.point([(xt, yt)], (255, 255, 255))
-	del draw
-	im.save(out_name, "PPM")
+    im = Image.open(base_image)
+    draw = ImageDraw.Draw(im)
+    #iterate over pixels in cubes, converting to the panel-space, and color those pixels white
+    for p in cube_coords:
+        xt, yt = transform_pixel(p[0], p[1], panels)
+        draw.point([(xt, yt)], (255, 255, 255))
+    del draw
+    im.save(out_name, "PPM")
 
 def convert_cube_coords(cube_pose):
-	"""convert from a grid with lattice pointsd corresponding to cubes to one corresponsding to pixles
-	inputs:
-		cube_pose: integer 2-tuple
-	outputs:
-		cube_coords: list of integer 2-tuples of pixel locations in untransformed space"""
-	xt = 12 #offsets for top-left of cubes
-	yt = 7
-	xstart = cube_pose[0]*6+xt
-	xend = xstart+5
-	ystart = cube_pose[1]*6+yt
-	yend = ystart+5
-	cube_coords = []
-	for x in range(xstart, xend+1):
-		for y in range(ystart, yend+1):
-			cube_coords.append((x, y))
-	return cube_coords
+    """convert from a grid with lattice pointsd corresponding to cubes to one corresponsding to pixles
+    inputs:
+        cube_pose: integer 2-tuple
+    outputs:
+        cube_coords: list of integer 2-tuples of pixel locations in untransformed space"""
+    xt = 12 #offsets for top-left of cubes
+    yt = 7
+    xstart = cube_pose[0]*6+xt
+    xend = xstart+5
+    ystart = cube_pose[1]*6+yt
+    yend = ystart+5
+    cube_coords = []
+    for x in range(xstart, xend+1):
+        for y in range(ystart, yend+1):
+            cube_coords.append((x, y))
+    return cube_coords
 
 # cubes = [(4,0),(5,0),
-# 	(4,1),(5,1),
-# 	(3,2),(4,2),
-# 	(2,3),(3,3),(4,3),
-# 	(2,4),(3,4),
-# 	(2,5),(3,5),
-# 	(2,6),(3,6),(4,6),
-# 	(2,7),(3,7),(4,7),
-# 	(2,8),(3,8),(4,8),(5,8),
-# 	(2,8),(3,8),(4,8),(5,8)]
+#     (4,1),(5,1),
+#     (3,2),(4,2),
+#     (2,3),(3,3),(4,3),
+#     (2,4),(3,4),
+#     (2,5),(3,5),
+#     (2,6),(3,6),(4,6),
+#     (2,7),(3,7),(4,7),
+#     (2,8),(3,8),(4,8),(5,8),
+#     (2,8),(3,8),(4,8),(5,8)]
 
 cube_ascii = """    ##
-	##
+    ##
    ##
   ###
   ##
@@ -157,8 +157,8 @@ cube_ascii = """    ##
   ####
    ### #
     ##
-	########
-	########
+    ########
+    ########
 ###########
    ##
   ##
@@ -169,20 +169,20 @@ cube_ascii = [c.strip() for c in cube_ascii]
 
 cubes = []
 for y, row in enumerate(cube_ascii):
-	for x, c in enumerate(row):
-		if c=='#':
-			cubes.append((x,y))
+    for x, c in enumerate(row):
+        if c=='#':
+            cubes.append((x,y))
 
 if __name__ == '__main__':
     out_pixels = []
     for p in pixels:
-		x1 = p[0]+12
-		y1 = p[1]+7
-	    if transform_pixel(x1,y1,pts)==None:
+        x1 = p[0]+12
+        y1 = p[1]+7
+        if transform_pixel(x1,y1,pts)==None:
             continue
         xt, yt = transform_pixel(x1,y1,pts)
         out_pixels.append((xt, yt, p[2], p[3], p[4]))
     make_image(pixels, 20*32, 32, "sbf_images/sbf_logo.PPM")
-	for i, c in tqdm.tqdm(enumerate(cubes)):
-		pixs = convert_cube_coords(c)
-		make_cube_image(pixs, "sbf_images/sbf_logo.PPM", "sbf_images/{}.PPM".format(i), pts)
+    for i, c in tqdm.tqdm(enumerate(cubes)):
+        pixs = convert_cube_coords(c)
+        make_cube_image(pixs, "sbf_images/sbf_logo.PPM", "sbf_images/{}.PPM".format(i), pts)
