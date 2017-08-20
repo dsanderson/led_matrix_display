@@ -25,8 +25,6 @@ print len(pixels)
 xmax = 238
 ymax = 128
 
-img = sbff_data.img
-
 def make_transformer(panel_x, panel_y, panel_rot, panel_chain_pos):
     panel_x = panel_x
     panel_y = panel_y
