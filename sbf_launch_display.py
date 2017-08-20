@@ -4,6 +4,8 @@ import pickle
 import random
 import keyboard
 from PIL import image
+import urllib2
+import time
 
 class SbfLaunch(SampleBase):
     def __init__(self, *args, **kwargs):
@@ -15,7 +17,15 @@ class SbfLaunch(SampleBase):
         canvas = self.matrix.CreateFrameCanvas()
         canvas.SetImage(self.image,0,0)
         while True:
+            try:
+                response = urllib2.urlopen('http://dsa.tech/flask/sbf/sbf/get')
+                cube = response.read()
+                cube_image = Image.open("sbf_images/{}.PPM".format(int(cube)-1))
+                canvas.SetImage(cube_image,0,0)
+            except:
+                canvas.SetImage(self.image,0,0)
             canvas = self.matrix.SwapOnVSync(canvas)
+            time.sleep(0.1)
 	    #pass #TODO: Add qr behavior here
 
 if __name__ == '__main__':
