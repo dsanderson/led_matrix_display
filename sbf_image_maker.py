@@ -4,12 +4,29 @@ import itertools
 import pickle
 import tqdm
 
-im = Image.open("SBF_logo.png")
+im = Image.open("SBF_logo_final.png")
 
-w = im.width
-h = im.height
+w, h = im.size
+
+scale = 1.015
+
+tx = -2
+ty = 0#-100
+
+temp_image = Image.new('RGBA', (w+150, h))
+temp_image.paste(im, (0,0,w,h))
+print temp_image.size
+im = temp_image
+
+data = (scale, 0, tx, 0, scale, ty)
+
+im = im.transform(im.size,Image.AFFINE,data)
+im.save("sbf_images/temp_logo.PPM","PPM")
+print im.size
 
 pixels = []
+
+w, h = im.size
 
 for x in xrange(0, w):
     for y in xrange(0, h):
@@ -18,7 +35,8 @@ for x in xrange(0, w):
         yt = h-(y+1)
         r, g, b, a = im.getpixel((x,y))
         if any([r != 0, b != 0, g != 0, a != 0]):
-            pixels.append((xt, yt, r, g, b))
+            if not all([r==255,g==255,b==255]):
+                pixels.append((xt, yt, r, g, b))
 
 print len(pixels)
 
@@ -87,6 +105,8 @@ for p in panels:
 
 ranges = [get_bounds(p) for p in pts]
 
+print ranges
+
 #test speed
 #t0=time.time()
 #for i in xrange(10000):
@@ -126,15 +146,15 @@ def convert_cube_coords(cube_pose):
         cube_pose: integer 2-tuple
     outputs:
         cube_coords: list of integer 2-tuples of pixel locations in untransformed space"""
-    xt = 12 #offsets for top-left of cubes
-    yt = 7
-    xstart = cube_pose[0]*6+xt
-    xend = xstart+5
-    ystart = cube_pose[1]*6+yt
-    yend = ystart+5
+    xt = 6#12 #offsets for top-left of cubes
+    yt = 0#7
+    xstart = cube_pose[0]*13+xt
+    xend = xstart+12
+    yend = ymax-1-cube_pose[1]*13+yt
+    ystart = yend-12
     cube_coords = []
-    for x in range(xstart, xend+1):
-        for y in range(ystart, yend+1):
+    for x in range(xstart, xend):
+        for y in range(ystart, yend):
             cube_coords.append((x, y))
     return cube_coords
 
@@ -168,7 +188,7 @@ cube_ascii = """    ##
   #"""
 
 cube_ascii = cube_ascii.split("\n")
-cube_ascii = [c.strip() for c in cube_ascii]
+#cube_ascii = [c.strip() for c in cube_ascii]
 
 cubes = []
 for y, row in enumerate(cube_ascii):
@@ -176,16 +196,21 @@ for y, row in enumerate(cube_ascii):
         if c=='#':
             cubes.append((x,y))
 
+print cubes
+
 if __name__ == '__main__':
     out_pixels = []
+    misses = 0
     for p in pixels:
         x1 = p[0]+12
         y1 = p[1]+7
         if transform_pixel(x1,y1,pts)==None:
+            misses += 1
             continue
         xt, yt = transform_pixel(x1,y1,pts)
         out_pixels.append((xt, yt, p[2], p[3], p[4]))
-    make_image(pixels, 20*32, 32, "sbf_images/sbf_logo.PPM")
+    print len(pixels), misses
+    make_image(out_pixels, 20*32, 32, "sbf_images/sbf_logo.PPM")
     for i, c in tqdm.tqdm(enumerate(cubes)):
         pixs = convert_cube_coords(c)
         make_cube_image(pixs, "sbf_images/sbf_logo.PPM", "sbf_images/{}.PPM".format(i), pts)
