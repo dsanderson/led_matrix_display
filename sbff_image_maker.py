@@ -7,6 +7,25 @@ import tqdm
 im = Image.open("SBFF_logo.png")
 
 w, h = im.size
+print w, h
+
+#resize and translate image
+
+scale = 0.99
+
+tx = 0
+ty = -5
+
+temp_image = Image.new('RGBA', (w+abs(tx), h+abs(ty)))
+temp_image.paste(im, (0,0,w,h))
+print temp_image.size
+im = temp_image
+print im.size
+
+data = (scale, 0, tx, 0, scale, ty)
+
+im = im.transform(im.size,Image.AFFINE,data)
+im.save("sbff_images/temp_logo.PPM","PPM")
 
 pixels = []
 
@@ -17,7 +36,10 @@ for x in xrange(0, w):
         yt = y#h-(y+1)
         r, g, b, a = im.getpixel((x,y))
         if any([r != 0, b != 0, g != 0, a != 0]):
-            pixels.append((xt, yt, r, g, b))
+            if b>200 and a<10:
+                pixels.append((xt, yt, 0, 86, 151))
+            elif r>200 and a<10:
+                pixels.append((xt, yt, 233, 46, 19))
 
 print len(pixels)
 
@@ -73,8 +95,8 @@ panels = [(0, 64, 90, 10),
             (160, 64, 270, 5),
             (110, 32, 0, 4),
             (78, 0, 270, 3),
-            (110, 0, 180, 2),
-            (174, 0, 180, 1)]
+            (118, 0, 180, 2),
+            (182, 0, 180, 1)]#shifted right 8
 #print panels
 pts = []
 for p in panels:
