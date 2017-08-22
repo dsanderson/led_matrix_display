@@ -20,8 +20,11 @@ class SbfLaunch(SampleBase):
             try:
                 response = urllib2.urlopen('http://dsa.tech/flask/sbf/sbf/get')
                 cube = response.read()
-                cube_image = Image.open("sbf_images/{}.PPM".format(int(cube)-1))
-                canvas.SetImage(cube_image,0,0)
+                if int(cube)<0:
+                    canvas.SetImage(self.image,0,0)
+                else:
+                    cube_image = Image.open("sbf_images/{}.PPM".format(int(cube)-1)).convert('RGB')
+                    canvas.SetImage(cube_image,0,0)
             except:
                 canvas.SetImage(self.image,0,0)
             canvas = self.matrix.SwapOnVSync(canvas)
