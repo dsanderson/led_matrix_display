@@ -6,7 +6,7 @@ import sbff_data
 xmax = 238
 ymax = 128
 
-img = sbf_data.img
+img = sbff_data.img
 
 def make_transformer(panel_x, panel_y, panel_rot, panel_chain_pos):
     panel_x = panel_x
@@ -28,8 +28,8 @@ def make_transformer(panel_x, panel_y, panel_rot, panel_chain_pos):
             yout = 31-xt
             xout = 63-yt
         elif panel_rot==270:
-            xout = xt
-            yout = yt
+            xout = yt
+            yout = xt
         xout = xout+(64*(panel_chain_pos-1))
         return xout, yout
     return transform
@@ -49,16 +49,16 @@ def transform_pixel(x, y, panels):
             return panel[4](x, y)
 
 
-panels = [(0, 64, 90, 1),
-            (32, 64, 270, 2),
-            (64, 64, 90, 3),
-            (96, 64, 270, 4),
-            (128, 64, 90, 5),
-            (160, 64, 270, 6),
-            (110, 32, 0, 7),
-            (78, 0, 270, 8),
-            (110, 0, 180, 9),
-            (174, 0, 180, 10)]
+panels = [(0, 64, 90, 10),
+            (32, 64, 270, 9),
+            (64, 64, 90, 8),
+            (96, 64, 270, 7),
+            (128, 64, 90, 6),
+            (160, 64, 270, 5),
+            (110, 32, 0, 4),
+            (78, 0, 270, 3),
+            (110, 0, 180, 2),
+            (174, 0, 180, 1)]
 #print panels
 pts = []
 for p in panels:
@@ -69,6 +69,8 @@ for p in panels:
     pts.append(pt)
 
 ranges = [get_bounds(p) for p in pts]
+#for r in ranges:
+#    print r
 
 #test speed
 #t0=time.time()
@@ -85,10 +87,12 @@ ranges = [get_bounds(p) for p in pts]
 if __name__ == '__main__':
     pixels = []
     for p in img:
-		if transform_pixel(p[0],p[1],pts)==None:
-			continue
-		xt, yt = transform_pixel(p[0],p[1],pts)
-		pixels.append((xt, yt, p[1], p[2], p[3]))
+	x = p[0]
+        y = ymax-1-p[1]
+	if transform_pixel(x,y,pts)==None:
+	    continue
+	xt, yt = transform_pixel(x,y,pts)
+	pixels.append((xt, yt, p[2], p[3], p[4]))
 
 print len(pixels)
 

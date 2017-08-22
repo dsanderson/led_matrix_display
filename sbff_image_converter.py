@@ -11,7 +11,7 @@ for x in xrange(0, w):
 	for y in xrange(0, h):
 		#flip y.  Also introduce any shift here
 		xt = x
-		yt = h-(y+1)
+		yt = y#h-(y+1)
 		r, g, b, a = im.getpixel((x,y))
 		if any([r != 0, b != 0, g != 0, a != 0]):
 			pixels.append((xt, yt, r, g, b))
