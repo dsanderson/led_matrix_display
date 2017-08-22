@@ -4,19 +4,19 @@ import itertools
 import pickle
 import tqdm
 
-im = Image.open("SBFF_logo.png")
+im = Image.open("SBFF_logo_final.png")
 
 w, h = im.size
 print w, h
 
 #resize and translate image
 
-scale = 0.99
+scale = 0.97
 
 tx = 0
-ty = -5
+ty = -3
 
-temp_image = Image.new('RGBA', (w+abs(tx), h+abs(ty)))
+temp_image = Image.new('RGBA', (w+100, h+100))
 temp_image.paste(im, (0,0,w,h))
 print temp_image.size
 im = temp_image
@@ -29,6 +29,9 @@ im.save("sbff_images/temp_logo.PPM","PPM")
 
 pixels = []
 
+w, h = im.size
+nb = 0
+
 for x in xrange(0, w):
     for y in xrange(0, h):
         #flip y.  Also introduce any shift here
@@ -36,12 +39,13 @@ for x in xrange(0, w):
         yt = y#h-(y+1)
         r, g, b, a = im.getpixel((x,y))
         if any([r != 0, b != 0, g != 0, a != 0]):
-            if b>200 and a<10:
-                pixels.append((xt, yt, 0, 86, 151))
-            elif r>200 and a<10:
-                pixels.append((xt, yt, 233, 46, 19))
+            if not all([r==255 and b==255 and g==255]):
+                if b==151:
+                    nb+=1
+                    pixels.append((xt, yt, 0, b, 0))
+                pixels.append((xt, yt, r, g, b))
 
-print len(pixels)
+print len(pixels), nb
 
 xmax = 238
 ymax = 128
@@ -95,8 +99,8 @@ panels = [(0, 64, 90, 10),
             (160, 64, 270, 5),
             (110, 32, 0, 4),
             (78, 0, 270, 3),
-            (118, 0, 180, 2),
-            (182, 0, 180, 1)]#shifted right 8
+            (117, 0, 180, 2),
+            (181, 0, 180, 1)]#shifted right 8
 #print panels
 pts = []
 for p in panels:
@@ -134,14 +138,14 @@ def convert_cube_coords(cube_pose):
     outputs:
         cube_coords: list of integer 2-tuples of pixel locations in untransformed space"""
     xt = 0 #offsets for top-left of cubes
-    yt = 0
+    yt = -1
     xstart = cube_pose[0]*13+xt
     xend = xstart+12
     ystart = cube_pose[1]*13+yt
     yend = ystart+12
     cube_coords = []
-    for x in range(xstart, xend+1):
-        for y in range(ystart, yend+1):
+    for x in range(xstart, xend):
+        for y in range(ystart, yend):
             cube_coords.append((x, ymax-1-y))
     return cube_coords
 
