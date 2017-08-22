@@ -6,8 +6,7 @@ import tqdm
 
 im = Image.open("SBFF_logo.png")
 
-w = im.width
-h = im.height
+w, h = im.size
 
 pixels = []
 
@@ -100,8 +99,9 @@ def make_cube_image(cube_coords, base_image, out_name, panels):
     draw = ImageDraw.Draw(im)
     #iterate over pixels in cubes, converting to the panel-space, and color those pixels white
     for p in cube_coords:
-        xt, yt = transform_pixel(p[0], p[1], panels)
-        draw.point([(xt, yt)], (255, 255, 255))
+        if transform_pixel(p[0],p[1],panels)!=None:
+            xt, yt = transform_pixel(p[0], p[1], panels)
+            draw.point([(xt, yt)], (255, 255, 255))
     del draw
     im.save(out_name, "PPM")
 
@@ -113,10 +113,10 @@ def convert_cube_coords(cube_pose):
         cube_coords: list of integer 2-tuples of pixel locations in untransformed space"""
     xt = 0 #offsets for top-left of cubes
     yt = 0
-    xstart = cube_pose[0]*6+xt
-    xend = xstart+5
-    ystart = cube_pose[1]*6+yt
-    yend = ystart+5
+    xstart = cube_pose[0]*13+xt
+    xend = xstart+12
+    ystart = cube_pose[1]*13+yt
+    yend = ystart+12
     cube_coords = []
     for x in range(xstart, xend+1):
         for y in range(ystart, yend+1):
