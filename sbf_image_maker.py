@@ -36,7 +36,7 @@ for x in xrange(0, w):
         r, g, b, a = im.getpixel((x,y))
         if any([r != 0, b != 0, g != 0, a != 0]):
             if not all([r==255,g==255,b==255]):
-                pixels.append((xt, yt, r, g, b))
+                pixels.append((xt, yt, r, b, g))
 
 print len(pixels)
 

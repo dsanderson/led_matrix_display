@@ -33,6 +33,6 @@ while True:
             cube_image = Image.open("sbf_images/{}.PPM".format(int(cube)-1))
             matrix.SetImage(cube_image.convert('RGB'))
     except Exception, e:
-        traceback.print_exc()
+        #traceback.print_exc()
         matrix.SetImage(image.convert('RGB'))
     time.sleep(0.1)
