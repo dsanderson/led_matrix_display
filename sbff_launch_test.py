@@ -23,10 +23,13 @@ matrix = RGBMatrix(options = options)
 
 matrix.SetImage(image.convert('RGB'))
 
+#cube = 0
 while True:
+    #cube+=1
     try:
         response = urllib2.urlopen('http://dsa.tech/flask/sbf/sbff/get')
         cube = response.read()
+        #cube = cube if cube<80 else -1
         if int(cube)<=0:
             matrix.SetImage(image.convert('RGB'))
         else:
@@ -35,4 +38,4 @@ while True:
     except Exception, e:
         traceback.print_exc()
         matrix.SetImage(image.convert('RGB'))
-    time.sleep(0.1)
+    time.sleep(0.25)

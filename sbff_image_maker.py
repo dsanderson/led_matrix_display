@@ -40,10 +40,10 @@ for x in xrange(0, w):
         r, g, b, a = im.getpixel((x,y))
         if any([r != 0, b != 0, g != 0, a != 0]):
             if not all([r==255 and b==255 and g==255]):
-                if b==151:
-                    nb+=1
-                    pixels.append((xt, yt, 0, b, 0))
-                pixels.append((xt, yt, r, g, b))
+                #if b==151:
+                #    nb+=1
+                #    pixels.append((xt, yt, 0, b, 0))
+                pixels.append((xt, yt, r, b, g))
 
 print len(pixels), nb
 
@@ -91,16 +91,16 @@ def transform_pixel(x, y, panels):
             return panel[4](x, y)
 
 
-panels = [(0, 64, 90, 10),
-            (32, 64, 270, 9),
-            (64, 64, 90, 8),
+panels = [(0, 65, 90, 10),
+            (32, 65, 270, 9),
+            (64, 65, 90, 8),
             (96, 64, 270, 7),
             (128, 64, 90, 6),
             (160, 64, 270, 5),
             (110, 32, 0, 4),
             (78, 0, 270, 3),
             (117, 0, 180, 2),
-            (181, 0, 180, 1)]#shifted right 8
+            (182, 0, 180, 1)]#shifted right 8
 #print panels
 pts = []
 for p in panels:
